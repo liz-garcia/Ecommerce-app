@@ -1,3 +1,3 @@
-# Ecommerce React App
+# Ecommerce - React App
 
-Deployed project here: [link](url)
+Deployed project here: [Ecommerce app](https://ecommerce-app-week1.netlify.app/)
