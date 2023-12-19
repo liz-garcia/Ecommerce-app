@@ -1,28 +1,50 @@
-import React from "react";
-import fakeData from "../fake-data/all-products.js";
+import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import "../App.css";
 
 const ProductList = ({ selectedCategory }) => {
-  const filteredProducts = selectedCategory
-    ? fakeData.filter((product) => product.category === selectedCategory)
-    : fakeData;
+  const [products, setProducts] = useState([]);
+
+  useEffect(() => {
+    const getProducts = async () => {
+      try {
+        const url = selectedCategory
+          ? `https://fakestoreapi.com/products/category/${selectedCategory}`
+          : "https://fakestoreapi.com/products";
+
+        const response = await fetch(url);
+        const fetchedProducts = await response.json();
+        setProducts(fetchedProducts);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      }
+    };
+
+    getProducts();
+  }, [selectedCategory]);
+
+  if (!products) {
+    return <p>Loading...</p>;
+  }
 
   return (
     <div>
       <h2>Products</h2>
       <ul className="product-list">
-        {filteredProducts.map((product) => (
+        {products.map((product) => (
           <li key={product.id}>
-            <div className="product-image-container">
-              <img
-                src={product.image}
-                alt={product.title}
-                className="product-image"
-              />
-            </div>
-            <strong>
-              <p type="text">{product.title.replace(/^FAKE: /, "")}</p>
-            </strong>
+            <Link to={`/product/${product.id}`}>
+              <div className="product-image-container">
+                <img
+                  src={product.image}
+                  alt={product.title}
+                  className="product-image"
+                />
+              </div>
+              <p className="product-title">
+                {product.title}
+              </p>
+            </Link>
           </li>
         ))}
       </ul>
