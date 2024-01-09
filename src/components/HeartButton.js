@@ -12,7 +12,7 @@ const HeartButton = ({ productId }) => {
       <img
         src={favoriteIds.includes(productId) ? heartSolid : heartRegular}
         alt={favoriteIds.includes(productId) ? "Favorited" : "Not Favorited"}
-        className="heart-icon"
+        className="heart-button"
         onClick={() => {
           if (favoriteIds.includes(productId)) {
             removeFromFavorites(productId);
