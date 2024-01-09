@@ -1,54 +1,34 @@
-import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import "../App.css";
+import React from "react";
+import useFetch from "../hooks/useFetch.js";
+import HeartButton from "./HeartButton.js";
+import ProductLink from "./ProductLink.js";
 
 const ProductList = ({ selectedCategory }) => {
-  const [products, setProducts] = useState([]);
+  const { data: products, loading, error } = useFetch(
+    selectedCategory
+      ? `https://fakestoreapi.com/products/category/${selectedCategory}`
+      : "https://fakestoreapi.com/products"
+  );
 
-  useEffect(() => {
-    const getProducts = async () => {
-      try {
-        const url = selectedCategory
-          ? `https://fakestoreapi.com/products/category/${selectedCategory}`
-          : "https://fakestoreapi.com/products";
-
-        const response = await fetch(url);
-        const fetchedProducts = await response.json();
-        setProducts(fetchedProducts);
-      } catch (error) {
-        console.error("Error fetching products:", error);
-      }
-    };
-
-    getProducts();
-  }, [selectedCategory]);
-
-  if (!products) {
+  if (loading) {
     return <p>Loading...</p>;
   }
 
+  if (error) {
+    return <p>Error fetching products: {error.message}</p>;
+  }
+
   return (
-    <div>
-      <h2>Products</h2>
+    <>
       <ul className="product-list">
         {products.map((product) => (
-          <li key={product.id}>
-            <Link to={`/product/${product.id}`}>
-              <div className="product-image-container">
-                <img
-                  src={product.image}
-                  alt={product.title}
-                  className="product-image"
-                />
-              </div>
-              <p className="product-title">
-                {product.title}
-              </p>
-            </Link>
+          <li key={product.id} id={product.id}>
+            <HeartButton productId={product.id} />
+            <ProductLink productItem={product} />
           </li>
         ))}
       </ul>
-    </div>
+    </>
   );
 };
 
